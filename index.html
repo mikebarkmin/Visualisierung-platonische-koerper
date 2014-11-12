@@ -16,7 +16,7 @@
 <script src="js/THREEx.WindowResize.js"></script>
 
 <script src="js/polyhedra.js"></script>
-<!-- GUI for experimenting with values -->		
+<!-- GUI for experimenting with values -->
 <script type='text/javascript' src='js/DAT.GUI.min.js'></script>
 
 <!-- Code to display an information button and box when clicked. -->
@@ -27,7 +27,7 @@
 <script src="js/info.js"></script>
 <div id="infoButton"></div>
 <div id="infoBox" title="Information">
-Steuerung: 
+Steuerung:
 <ul>
 <li>Rotieren: Linke Maustaste
 <li>Zoom: Mausrad
@@ -53,8 +53,8 @@ var mesh;
 init();
 animate();
 
-// FUNCTIONS 		
-function init() 
+// FUNCTIONS
+function init()
 {
 	// SCENE
 	scene = new THREE.Scene();
@@ -63,13 +63,13 @@ function init()
 	var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
 	camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
 	scene.add(camera);
-	camera.position.set(0,150,400);
-	camera.lookAt(scene.position);	
+	camera.position.set(0,180,500);
+	camera.lookAt(scene.position);
 	// RENDERER
 	if ( Detector.webgl )
 		renderer = new THREE.WebGLRenderer( {antialias:true} );
 	else
-		renderer = new THREE.CanvasRenderer(); 
+		renderer = new THREE.CanvasRenderer();
 	renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	container = document.getElementById( 'ThreeJS' );
 	container.appendChild( renderer.domElement );
@@ -87,26 +87,26 @@ function init()
 	var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0xccccff, side: THREE.BackSide } );
 	var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
 	scene.add(skyBox);
-	
+
 	////////////
 	// CUSTOM //
 	////////////
-	
+
 	this.parameters = { transparent: false };
-	this.polyhedronMesh = new THREE.Object3D(); 
-	this.titleSprite = new THREE.Object3D();	
+	this.polyhedronMesh = new THREE.Object3D();
+	this.titleSprite = new THREE.Object3D();
 	scene.add(polyhedronMesh);
 	scene.add(titleSprite);
-	this.titleSpriteParams = 
-	{ 
-	    fontsize: 24, 
-	    useScreenCoordinates: true, 
+	this.titleSpriteParams =
+	{
+	    fontsize: 24,
+	    useScreenCoordinates: true,
 	    borderThickness: 2,
-	    borderColor: {r:0, g:0, b:0, a:1.0}, 
-	    backgroundColor: {r:255, g:255, b:255, a:0.9}, 
-	    spriteAlignment: THREE.SpriteAlignment.topCenter 
+	    borderColor: {r:0, g:0, b:0, a:1.0},
+	    backgroundColor: {r:255, g:255, b:255, a:0.9},
+	    spriteAlignment: THREE.SpriteAlignment.topCenter
 	}
-		
+
 	displayPolyhedron( POLYHEDRA.Tetrahedron );
 
 	/////////
@@ -114,7 +114,7 @@ function init()
 	/////////
 
 	gui = new dat.GUI();
-	
+
 	gui.add( parameters, "transparent" )
 	   .name( "Transparenz einschalten" )
 	   .onChange( function(value)
@@ -123,7 +123,7 @@ function init()
                         if(value == true) polyhedronMesh.children[2].material.opacity = 0;
 			else polyhedronMesh.children[2].material.opacity = 1;
 		});
-		
+
 	gui.add( parameters, "transparent" )
 	   .name( "Rotationsachsen anzeigen" )
 	   .onChange( function(value)
@@ -135,7 +135,7 @@ function init()
                 polyhedronMesh.children[5].material.opacity = 1;
             }
 		});
-		
+
 	gui.add( parameters, "transparent" )
 	   .name( "Pole anzeigen" )
 	   .onChange( function(value)
@@ -148,7 +148,7 @@ function init()
 			polyhedronMesh.children[4].material.transparent = value;
 			polyhedronMesh.children[4].material.wireframe = !value;
 		});
-	
+
 	categoryFolders = {};
 	// check category[0]. if folder does not exist, create it, add it to that folder.
 	//   if category field DNE, just add it to the end.
@@ -162,9 +162,9 @@ function init()
 				categoryFolders[category] = gui.addFolder(category);
 			guiSection = categoryFolders[category];
 		}
-		
+
         parameters[arg] = function() {};
-		
+
 		guiSection.add( parameters, arg )
 		.name( POLYHEDRA[arg].name )
 		.onChange( function(value)
@@ -172,8 +172,8 @@ function init()
 		   displayPolyhedron( POLYHEDRA[this.property] );
 		});
 	}
-	gui.open();	
-	
+	gui.open();
+
 } // end of function init()
 
 var faces;
@@ -333,7 +333,7 @@ function cylinderMesh(point1, point2, material)
     var arrow = new THREE.ArrowHelper(direction.clone().normalize(), point1);
     var rotation = new THREE.Vector3().setEulerFromQuaternion(arrow.quaternion);
     var edgeGeometry = new THREE.CylinderGeometry( 2, 2, direction.length(), 8, 4 );
-    var edge = new THREE.Mesh(edgeGeometry, material); 
+    var edge = new THREE.Mesh(edgeGeometry, material);
     edge.position = new THREE.Vector3().addVectors(point1, direction.multiplyScalar(0.5));
 	edge.rotation = rotation;
 	return edge;
@@ -358,24 +358,24 @@ function barycenter(points, data) {
     return baryvector;
 }
 
-function animate() 
+function animate()
 {
     requestAnimationFrame( animate );
-	render();		
+	render();
 	update();
 }
 
 function update()
 {
-	if (camera.position.length() < 150) 
-		camera.position.setLength(150); 
-	if (camera.position.length() > 500)
-		camera.position.setLength(500);
-	
+	if (camera.position.length() < 150)
+		camera.position.setLength(150);
+	if (camera.position.length() > 700)
+		camera.position.setLength(700);
+
 	controls.update();
 }
 
-function render() 
+function render()
 {
 	renderer.render( scene, camera );
 }
@@ -383,37 +383,37 @@ function render()
 function makeTextSprite( message, parameters )
 {
 	if ( parameters === undefined ) parameters = {};
-	
-	var fontface = parameters.hasOwnProperty("fontface") ? 
+
+	var fontface = parameters.hasOwnProperty("fontface") ?
 		parameters["fontface"] : "Arial";
-	
-	var fontsize = parameters.hasOwnProperty("fontsize") ? 
+
+	var fontsize = parameters.hasOwnProperty("fontsize") ?
 		parameters["fontsize"] : 18;
-	
-	var borderThickness = parameters.hasOwnProperty("borderThickness") ? 
+
+	var borderThickness = parameters.hasOwnProperty("borderThickness") ?
 		parameters["borderThickness"] : 4;
-	
+
 	var borderColor = parameters.hasOwnProperty("borderColor") ?
 		parameters["borderColor"] : { r:0, g:0, b:0, a:1.0 };
-	
+
 	var backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
 		parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
 
 	var useScreenCoordinates = parameters.hasOwnProperty("useScreenCoordinates") ?
 		parameters["useScreenCoordinates"] : false;
-	
+
 	var spriteAlignment = parameters.hasOwnProperty("spriteAlignment") ?
 		parameters["spriteAlignment"] : THREE.SpriteAlignment.topLeft;
-		
+
 	// create canvas, resize later.
 	var canvas = document.createElement('canvas');
 	var context = canvas.getContext('2d');
 	context.font = "Bold " + fontsize + "px " + fontface;
-    
+
 	// get size data (height depends only on font size)
 	var metrics = context.measureText( message );
 	var textWidth = metrics.width;
-	
+
 	// calculate correct dimensions of canvas and resize
 	var imageWidth = textWidth + borderThickness * 2;
 	var imageHeight = fontsize * 1.44 + borderThickness * 2;
@@ -422,7 +422,7 @@ function makeTextSprite( message, parameters )
 	// new canvas, new context.
 	context = canvas.getContext('2d');
 	context.font = "Bold " + fontsize + "px " + fontface;
-	
+
 	// background color
 	context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
 								  + backgroundColor.b + "," + backgroundColor.a + ")";
@@ -433,27 +433,27 @@ function makeTextSprite( message, parameters )
 	context.lineWidth = borderThickness;
 	roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 6);
 	// 1.4 is extra height factor for text below baseline: g,j,p,q.
-	
+
 	// text color
 	context.fillStyle = "rgba(0, 0, 0, 1.0)";
 
 	context.fillText( message, borderThickness, fontsize + borderThickness );
-	
+
 	// canvas contents will be used for a texture
-	var texture = new THREE.Texture(canvas) 
+	var texture = new THREE.Texture(canvas)
 	texture.needsUpdate = true;
 
-	var spriteMaterial = new THREE.SpriteMaterial( 
+	var spriteMaterial = new THREE.SpriteMaterial(
 		{ map: texture, useScreenCoordinates: useScreenCoordinates, alignment: spriteAlignment } );
 	var sprite = new THREE.Sprite( spriteMaterial );
 	sprite.scale.set(imageWidth, imageHeight, 1.0);
 	sprite.width = imageWidth;
 	sprite.height = imageHeight;
-	return sprite;	
+	return sprite;
 }
 
 // function for drawing rounded rectangles
-function roundRect(ctx, x, y, w, h, r) 
+function roundRect(ctx, x, y, w, h, r)
 {
     ctx.beginPath();
     ctx.moveTo(x+r, y);
@@ -467,7 +467,7 @@ function roundRect(ctx, x, y, w, h, r)
     ctx.quadraticCurveTo(x, y, x+r, y);
     ctx.closePath();
     ctx.fill();
-	ctx.stroke();   
+	ctx.stroke();
 }
 
 </script>
