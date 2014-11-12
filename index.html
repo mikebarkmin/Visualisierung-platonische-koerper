@@ -284,7 +284,7 @@ function polyhedronDataToMesh(data)
 	polyhedron.add( interiorFaces );
 
 	//Umkugel und Rotationsachsen
-	var geometry = new THREE.SphereGeometry( 180, 16, 16 );
+	var geometry = new THREE.SphereGeometry( 190, 16, 16 );
 	var material = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true, transparent:parameters.transparent, opacity:0.8 } );
 	var sphere = new THREE.Mesh( geometry, material );
 
@@ -354,7 +354,7 @@ function barycenter(points, data) {
     barycenter[1] = barycenter[1]/points.length;
     barycenter[2] = barycenter[2]/points.length;
 
-    var baryvector = new THREE.Vector3(barycenter[0],barycenter[1],barycenter[2]).setLength(180);
+    var baryvector = new THREE.Vector3(barycenter[0],barycenter[1],barycenter[2]).setLength(190);
     return baryvector;
 }
 
