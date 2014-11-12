@@ -26,28 +26,21 @@
 <link rel=stylesheet href="css/info.css"/>
 <script src="js/info.js"></script>
 <div id="infoButton"></div>
-<div id="infoBox" title="Demo Information">
-Controls: 
+<div id="infoBox" title="Information">
+Steuerung: 
 <ul>
-<li>Rotate: Left Mouse Button
-<li>Zoom: Mouse Wheel 
+<li>Rotieren: Linke Maustaste
+<li>Zoom: Mausrad
 </ul>
-
-Data from the website "Virtual Polyhedra: The Encyclopedia of Polyhedra" by George W. Hart
-<a href="http://www.georgehart.com/virtual-polyhedra/vp.html">http://www.georgehart.com/virtual-polyhedra/vp.html</a>
-<br/><br/> 
-This three.js demo is part of a collection at
+Diese Anwendung ist im Rahmen der Bachelorarbeit "Klassifizierung der endlichen
+Untergruppen der orthogonalen Gruppe im zwei- und dreidimensionalen Raum" entstanden und
+basiert auf der Demo-Anwendung:
 <a href="http://stemkoski.github.io/Three.js/">http://stemkoski.github.io/Three.js/</a>
 </div>
 <!-- ------------------------------------------------------------ -->
 
 <div id="ThreeJS" style="position: absolute; left:0px; top:0px"></div>
 <script>
-/*
-	Three.js "tutorials by example"
-	Author: Lee Stemkoski
-	Date: July 2013 (three.js v59dev)
- */
 
 // MAIN
 
@@ -123,29 +116,28 @@ function init()
 	gui = new dat.GUI();
 	
 	gui.add( parameters, "transparent" )
-	   .name( "Toggle Transparency" )
+	   .name( "Transparenz einschalten" )
 	   .onChange( function(value)
 		{
 			polyhedronMesh.children[2].material.transparent = value;
-		});
-		
-	gui.add( parameters, "transparent" )
-	   .name( "Toggle Reflection Axis" )
-	   .onChange( function(value)
-		{
-			polyhedronMesh.children[2].material.transparent = value;
-		});
-		
-	gui.add( parameters, "transparent" )
-	   .name( "Toggle Multicolor" )
-	   .onChange( function(value)
-		{
-			if(value == true) polyhedronMesh.children[2].material.opacity = 0;
+                        if(value == true) polyhedronMesh.children[2].material.opacity = 0;
 			else polyhedronMesh.children[2].material.opacity = 1;
 		});
 		
 	gui.add( parameters, "transparent" )
-	   .name( "Toggle Poles" )
+	   .name( "Rotationsachsen anzeigen" )
+	   .onChange( function(value)
+		{
+            polyhedronMesh.children[5].material.transparent = value;
+            if(value == true) {
+                polyhedronMesh.children[5].material.opacity = 0;
+            } else {
+                polyhedronMesh.children[5].material.opacity = 1;
+            }
+		});
+		
+	gui.add( parameters, "transparent" )
+	   .name( "Pole anzeigen" )
 	   .onChange( function(value)
 		{
 			if(value == true) {
@@ -188,6 +180,8 @@ var faces;
 
 function displayPolyhedron(data)
 {
+    //Die Paramater aus dem Menü müssen ihr übergeben werden, sonst werden
+    //diese immer auf den Standard zurückgesetzt
 	scene.remove(polyhedronMesh);
 	scene.remove(titleSprite);
 	polyhedronMesh = polyhedronDataToMesh(data);
@@ -201,9 +195,9 @@ function displayPolyhedron(data)
 function polyhedronDataToMesh(data)
 {
 	var polyhedron = new THREE.Object3D();
-	
+
 	// convert vertex data to THREE.js vectors
-	var vertex = [] 
+	var vertex = [];
 	for (var i = 0; i < data.vertex.length; i++)
 		vertex.push( new THREE.Vector3( data.vertex[i][0], data.vertex[i][1], data.vertex[i][2] ).multiplyScalar(100) );
 
@@ -216,11 +210,14 @@ function polyhedronDataToMesh(data)
 	{
 		var vMesh = vertexSingleMesh.clone();
 		vMesh.position = vertex[i];
-		THREE.GeometryUtils.merge( vertexAmalgam, vMesh );
+        var spritey = makeTextSprite( "V:"+i,{ fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
+		spritey.position =vertex[i];
+        polyhedron.add(spritey);
+        THREE.GeometryUtils.merge( vertexAmalgam, vMesh );
 	}
 	var vertexMesh = new THREE.Mesh( vertexAmalgam, vertexMaterial );
 	polyhedron.add( vertexMesh );
-	
+
 	// convert edge data to cylinders
 	var edgeMaterial = new THREE.MeshLambertMaterial( {color: 0x666666} );
 	var edgeAmalgam = new THREE.Geometry();
@@ -233,10 +230,10 @@ function polyhedronDataToMesh(data)
 	}
 	var edgeMesh = new THREE.Mesh( edgeAmalgam, edgeMaterial );
 	polyhedron.add( edgeMesh );
-	
+
 	// convert face data to a single (triangulated) geometry
 	var faceMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors, side: THREE.FrontSide, transparent:parameters.transparent, opacity:1 } );
-	var faceColors = 
+	var faceColors =
 	{
 		0: new THREE.Color( 0xc892a2 ),
 		1: new THREE.Color( 0xbd438e ),
@@ -259,7 +256,7 @@ function polyhedronDataToMesh(data)
 	    18: new THREE.Color( 0x4844a3 ),
 	    19: new THREE.Color( 0x5443a3)
 	};
-	
+
 	var geometry = new THREE.Geometry();
 	geometry.vertices = vertex;
 	var faceIndex = 0;
@@ -272,43 +269,61 @@ function polyhedronDataToMesh(data)
 			faceIndex++;
 		}
 	}
-	
+
 	geometry.computeFaceNormals();
 	geometry.computeVertexNormals();
 
 	faces = new THREE.Mesh(geometry, faceMaterial);
 	faces.scale.multiplyScalar(1.01);
 	polyhedron.add(faces);
-	
+
 	var interiorMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff, vertexColors: THREE.FaceColors, side: THREE.BackSide } );
-	
+
 	var interiorFaces = new THREE.Mesh(geometry, interiorMaterial);
 	interiorFaces.scale.multiplyScalar(0.99);
 	polyhedron.add( interiorFaces );
-	
+
 	//Umkugel und Rotationsachsen
 	var geometry = new THREE.SphereGeometry( 180, 16, 16 );
 	var material = new THREE.MeshBasicMaterial( { color: 0xffffff, wireframe: true, transparent:parameters.transparent, opacity:0.8 } );
 	var sphere = new THREE.Mesh( geometry, material );
-	
-    // add the sphere to the scene
+
+    // Kugel hinzufügen
     polyhedron.add(sphere);
-    
-    // convert edge data to cylinders
-	var axisMaterial = new THREE.MeshLambertMaterial( {color: 0x666666} );
+
+    //Pole
+	var poleGeometry = new THREE.SphereGeometry( 6, 12, 6 );
+	var poleMaterial = new THREE.MeshLambertMaterial( { color: 0xEEE } );
+	var poleSingleMesh = new THREE.Mesh( vertexGeometry );
+
+	var poleAmalgam = new THREE.Geometry();
+    var poles = [];
+    var poleIndex = 0;
+    for(var i = 0; i < data.axis.length; i++) {
+        for(var p = 0; p < data.axis[i].length; p++) {
+		    var pMesh = poleSingleMesh.clone();
+            poles.push(barycenter(data.axis[i][p], data));
+		    pMesh.position = poles[poleIndex];
+            THREE.GeometryUtils.merge( poleAmalgam, pMesh );
+            poleIndex++;
+        }
+    }
+	var poleMesh = new THREE.Mesh( poleAmalgam, poleMaterial );
+	polyhedron.add( poleMesh );
+
+    // Drehachsen
+    var axisMaterial = new THREE.MeshLambertMaterial( {color: 0xffffff} );
 	var axisAmalgam = new THREE.Geometry();
-	for (var i = 0; i < data.axis.length; i++)
+	for (var i = 0; i < poles.length; i++)
 	{
-		var index0 = data.axis[i][0];
-		var index1 = data.axis[i][1];
-		var aMesh = cylinderMesh( vertex[index0], vertex[index1], axisMaterial );
-		aMesh.size.y = 180;
+		var aMesh = cylinderMesh( poles[i], poles[i+1], axisMaterial );
+        aMesh.scale.y = 1.1;
 		THREE.GeometryUtils.merge( axisAmalgam, aMesh );
+        i++;
 	}
 	var axisMesh = new THREE.Mesh( axisAmalgam, axisMaterial );
 	polyhedron.add( axisMesh );
 
-	
 	return polyhedron;
 }
 
@@ -325,6 +340,22 @@ function cylinderMesh(point1, point2, material)
 
 	// the result should align with:
 	//   scene.add( new THREE.ArrowHelper( direction.clone().normalize(), point1, direction.length()) );
+}
+
+function barycenter(points, data) {
+    var barycenter = [0,0,0];
+    for(var i = 0; i < points.length; i++) {
+        barycenter[0] += data.vertex[points[i]][0];
+        barycenter[1] += data.vertex[points[i]][1];
+        barycenter[2] += data.vertex[points[i]][2];
+    }
+
+    barycenter[0] = barycenter[0]/points.length;
+    barycenter[1] = barycenter[1]/points.length;
+    barycenter[2] = barycenter[2]/points.length;
+
+    var baryvector = new THREE.Vector3(barycenter[0],barycenter[1],barycenter[2]).setLength(180);
+    return baryvector;
 }
 
 function animate() 
