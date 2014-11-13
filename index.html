@@ -128,11 +128,11 @@ function init()
 	   .name( "Rotationsachsen anzeigen" )
 	   .onChange( function(value)
 		{
-            polyhedronMesh.children[5].material.transparent = value;
+            polyhedronMesh.children[6].material.transparent = value;
             if(value == true) {
-                polyhedronMesh.children[5].material.opacity = 0;
+                polyhedronMesh.children[6].material.opacity = 0;
             } else {
-                polyhedronMesh.children[5].material.opacity = 1;
+                polyhedronMesh.children[6].material.opacity = 1;
             }
 		});
 
@@ -140,10 +140,13 @@ function init()
 	   .name( "Pole anzeigen" )
 	   .onChange( function(value)
 		{
+            polyhedronMesh.children[5].material.transparent = value;
 			if(value == true) {
 				polyhedronMesh.children[4].material.opacity = 0;
+                polyhedronMesh.children[5].material.opacity = 0;
 			} else {
 				polyhedronMesh.children[4].material.opacity = 1;
+                polyhedronMesh.children[5].material.opacity = 1;
 			}
 			polyhedronMesh.children[4].material.transparent = value;
 			polyhedronMesh.children[4].material.wireframe = !value;
@@ -210,9 +213,9 @@ function polyhedronDataToMesh(data)
 	{
 		var vMesh = vertexSingleMesh.clone();
 		vMesh.position = vertex[i];
-        var spritey = makeTextSprite( "V:"+i,{ fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
-		spritey.position =vertex[i];
-        polyhedron.add(spritey);
+        <!--var spritey = makeTextSprite( "V:"+i,{ fontsize: 24, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );-->
+		<!--spritey.position =vertex[i];-->
+        <!--polyhedron.add(spritey);-->
         THREE.GeometryUtils.merge( vertexAmalgam, vMesh );
 	}
 	var vertexMesh = new THREE.Mesh( vertexAmalgam, vertexMaterial );
@@ -292,25 +295,32 @@ function polyhedronDataToMesh(data)
     polyhedron.add(sphere);
 
     //Pole
-	var poleGeometry = new THREE.SphereGeometry( 6, 12, 6 );
-	var poleMaterial = new THREE.MeshLambertMaterial( { color: 0xEEE } );
-	var poleSingleMesh = new THREE.Mesh( vertexGeometry );
-
-	var poleAmalgam = new THREE.Geometry();
+    var count = 0;
     var poles = [];
     var poleIndex = 0;
-    for(var i = 0; i < data.axis.length; i++) {
-        for(var p = 0; p < data.axis[i].length; p++) {
-		    var pMesh = poleSingleMesh.clone();
-            poles.push(barycenter(data.axis[i][p], data));
-		    pMesh.position = poles[poleIndex];
-            THREE.GeometryUtils.merge( poleAmalgam, pMesh );
-            poleIndex++;
+    var i = 0;
+    for(var o = 0; o < data.orbits.length; o++) {
+        var poleGeometry = new THREE.SphereGeometry( 6, 12, 6 );
+        var poleMaterial = new THREE.MeshLambertMaterial( { color: 0xEEE } );
+        if(o == 1) poleMaterial.color = faceColors[10];
+        else if(o == 2) poleMaterial.color =  faceColors[2];
+        var poleSingleMesh = new THREE.Mesh( vertexGeometry );
+        var poleAmalgam = new THREE.Geometry();
+        if(o != 0) i = data.orbits[o-1];
+        count += data.orbits[o];
+        while(i < count) {
+            for(var p = 0; p < data.axis[i].length; p++) {
+                var pMesh = poleSingleMesh.clone();
+                poles.push(barycenter(data.axis[i][p], data));
+                pMesh.position = poles[poleIndex];
+                THREE.GeometryUtils.merge( poleAmalgam, pMesh );
+                poleIndex++;
+            }
+            i++;
         }
+        var poleMesh = new THREE.Mesh( poleAmalgam, poleMaterial );
+        polyhedron.add( poleMesh );
     }
-	var poleMesh = new THREE.Mesh( poleAmalgam, poleMaterial );
-	polyhedron.add( poleMesh );
-
     // Drehachsen
     var axisMaterial = new THREE.MeshLambertMaterial( {color: 0xffffff} );
 	var axisAmalgam = new THREE.Geometry();
