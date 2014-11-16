@@ -35,7 +35,7 @@
 <script src="js/polyhedra.js"></script>
 <script type='text/javascript' src='js/DAT.GUI.min.js'></script>
 
-<core-scaffold id="scaffold">
+<core-scaffold id="scaffold" responsiveWidth="1280px">
     <core-header-panel navigation flex mode="seamed">
             <core-toolbar>Platonische Körper</core-toolbar>
         <paper-shadow>
@@ -82,7 +82,7 @@
         scene = new THREE.Scene();
         // Die Kamera positionieren
         var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight-64;
-        if(window.innerWidth > 600) {
+        if(window.innerWidth > 1280) {
             SCREEN_WIDTH = window.innerWidth-256;
         }
         var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
