@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
 <head>
     <title>Visualisierung der Platonischen Körper</title>
     <meta charset="utf-8">
@@ -33,13 +33,12 @@
 
 <!-- Daten der Polyeder einbinden -->
 <script src="js/polyhedra.js"></script>
-<script type='text/javascript' src='js/DAT.GUI.min.js'></script>
 
 <core-scaffold id="scaffold" responsiveWidth="1280px">
     <core-header-panel navigation flex mode="seamed">
             <core-toolbar>Platonische Körper</core-toolbar>
         <paper-shadow>
-            <core-selector>
+            <core-selector selected="0" selectedAttribute="">
                 <paper-item onclick="displayPolyhedron(POLYHEDRA.Tetrahedron)">Tetraeder</paper-item>
                 <paper-item onclick="displayPolyhedron(POLYHEDRA.Cube)">Hexaeder</paper-item>
                 <paper-item onclick="displayPolyhedron(POLYHEDRA.Octahedron)">Oktaeder</paper-item>
@@ -47,19 +46,22 @@
                 <paper-item onclick="displayPolyhedron(POLYHEDRA.Icosahedron)">Ikosaeder</paper-item>
             </core-selector>
         </paper-shadow>
-
-        <core-label horizontal layout class="settings-checkbox">
-            <div flex>Flächen</div>
-            <paper-toggle-button for onchange="faces()" id="cb_faces" checked></paper-toggle-button>
-        </core-label>
-        <core-label horizontal layout class="settings-checkbox">
-            <div flex>Pole</div>
-            <paper-toggle-button for onchange="poles()" id="cb_poles" checked></paper-toggle-button>
-        </core-label>
-        <core-label horizontal layout class="settings-checkbox">
-            <div flex>Drehachsen</div>
-            <paper-toggle-button for onchange="axis()" id="cb_axis" checked></paper-toggle-button>
-        </core-label>
+        <paper-shadow>
+            <core-label horizontal layout class="settings-checkbox">
+                <div flex>Flächen</div>
+                <paper-toggle-button for onchange="faces()" id="cb_faces" checked></paper-toggle-button>
+            </core-label>
+            <core-label horizontal layout class="settings-checkbox">
+                <div flex>Pole</div>
+                <paper-toggle-button for onchange="poles()" id="cb_poles" checked></paper-toggle-button>
+            </core-label>
+            <core-label horizontal layout class="settings-checkbox">
+                <div flex>Drehachsen</div>
+                <paper-toggle-button for onchange="axis()" id="cb_axis" checked></paper-toggle-button>
+            </core-label>
+        </paper-shadow>
+        <paper-item>Hilfe</paper-item>
+        <paper-item>Über</paper-item>
     </core-header-panel>
     <div tool id="polyhedron_name">Title</div>
     <div id="ThreeJS" style="position: absolute; left:0px; bottom:0px"></div>
