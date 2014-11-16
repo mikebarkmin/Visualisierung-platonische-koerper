@@ -13,9 +13,12 @@
     <link rel="import" href="bower_components/core-menu/core-menu.html">
     <link rel="import" href="bower_components/core-selector/core-selector.html">
     <link rel="import" href="bower_components/core-label/core-label.html">
+    <link rel="import" href="bower_components/core-icons/core-icons.html">
     <link rel="import" href="bower_components/paper-item/paper-item.html">
     <link rel="import" href="bower_components/paper-toggle-button/paper-toggle-button.html">
     <link rel="import" href="bower_components/paper-shadow/paper-shadow.html">
+    <link rel="import" href="bower_components/paper-fab/paper-fab.html">
+    <link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
 
 </head>
 <body onresize="init()">
@@ -32,7 +35,7 @@
 <script src="js/polyhedra.js"></script>
 <script type='text/javascript' src='js/DAT.GUI.min.js'></script>
 
-<core-scaffold>
+<core-scaffold id="scaffold">
     <core-header-panel navigation flex mode="seamed">
         <paper-shadow>
             <core-toolbar>Platonische Körper</core-toolbar>
@@ -62,6 +65,7 @@
     </core-header-panel>
     <div tool id="polyhedron_name">Title</div>
     <div id="ThreeJS" style="position: absolute; left:0px; bottom:0px"></div>
+    <paper-fab icon="info-outline" style="position: absolute; bottom: 20px; right: 20px" onclick="dialog.toggle()"></paper-fab>
 </core-scaffold>
 
 <script>
@@ -70,7 +74,7 @@
     var container, scene, camera, renderer, controls;
 
     // custom global variables
-    var mesh, polyhedron;
+    var polyheadronMesh, polyhedron, dialog;
 
     init();
     animate();
@@ -115,8 +119,9 @@
         this.polyhedronMesh = new THREE.Object3D();
         scene.add(polyhedronMesh);
         //Das erste Polyeder anzeigen
-        polyhedron_name.innerHTML = "Tetraeder";
+        document.getElementById("polyhedron_name").innerHTML = "Tetraeder";
         polyhedronMesh = polyhedronDataToMesh(POLYHEDRA.Tetrahedron);
+        informationBox(POLYHEDRA.Tetrahedron);
         scene.add(polyhedronMesh);
     }
 
@@ -125,7 +130,7 @@
         //Die Paramater aus dem Menü müssen ihr übergeben werden, sonst werden
         //diese immer auf den Standard zurückgesetzt
         scene.remove(polyhedronMesh);
-        polyhedron_name.innerHTML = data.name;
+        informationBox(data);
         polyhedronMesh = polyhedronDataToMesh(data);
         faces();
         poles();
@@ -372,6 +377,15 @@
             polyhedronMesh.children[6].material.opacity = 0;
         }
     }
+
+    function informationBox(data) {
+        dialog = document.createElement('paper-dialog');
+        dialog.setAttribute('transition','core-transition-right');
+        dialog.setAttribute('style','position:absoulte; bottom:0px; width:400px; right:50px; padding: 5px');
+        dialog.innerHTML = data.description;
+        document.body.appendChild(dialog);
+    }
+
 </script>
 </body>
 </html>
