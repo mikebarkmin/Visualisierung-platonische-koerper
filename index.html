@@ -61,7 +61,7 @@
             </core-label>
         </paper-shadow>
         <paper-item>Hilfe</paper-item>
-        <paper-item>Über</paper-item>
+        <paper-item onclick="about.toggle()">Über</paper-item>
     </core-header-panel>
     <div tool id="polyhedron_name">Title</div>
     <div id="ThreeJS" style="position: absolute; left:0px; bottom:0px"></div>
@@ -74,7 +74,7 @@
     var container, scene, camera, renderer, controls;
 
     // custom global variables
-    var polyheadronMesh, polyhedron, dialog, current = POLYHEDRA.Tetrahedron;
+    var polyheadronMesh, polyhedron, dialog, current = POLYHEDRA.Tetrahedron, about;
 
     init();
     animate();
@@ -122,6 +122,7 @@
         document.getElementById("polyhedron_name").innerHTML = current.name;
         polyhedronMesh = polyhedronDataToMesh(current);
         informationBox(current);
+        aboutBox();
         scene.add(polyhedronMesh);
     }
 
@@ -392,6 +393,22 @@
 
         dialog.innerHTML = data.description;
         document.body.appendChild(dialog);
+    }
+
+    function aboutBox() {
+        about = document.createElement('paper-dialog');
+        about.setAttribute('backdrop','true');
+        about.setAttribute('transition','core-transition-left');
+        about.setAttribute('heading','Über');
+        if(window.innerWidth > 600) {
+            about.setAttribute('style', 'position:absoulte; width:400px; padding: 5px');
+        } else {
+            about.setAttribute('style', 'padding: 5px');
+        }
+
+        about.innerHTML = "Die Webanwendung wurde im Rahmen der Bachelorarbeit 'Endliche Untergruppen der orthogonalen Gruppe im zwei- und dreidimensionalen Raum' erstellt und dient zur Visualisierung der platonischen Körper. " +
+        "<br><br> Erstellt von <b>Mike Barkmin</b>. Ein Dank geht an die Open-Source-Projekte <a href='https://www.polymer-project.org'>Polymer</a> und <a href='http://three.js'>ThreeJS</a>, die in dieser Webanwendung benutzt wurden." ;
+        document.body.appendChild(about);
     }
 
 </script>
