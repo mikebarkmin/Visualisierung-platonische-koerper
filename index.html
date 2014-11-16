@@ -37,9 +37,7 @@
 
 <core-scaffold id="scaffold">
     <core-header-panel navigation flex mode="seamed">
-        <paper-shadow>
             <core-toolbar>Platonische Körper</core-toolbar>
-        </paper-shadow>
         <paper-shadow>
             <core-selector>
                 <paper-item onclick="displayPolyhedron(POLYHEDRA.Tetrahedron)">Tetraeder</paper-item>
@@ -131,6 +129,7 @@
         //diese immer auf den Standard zurückgesetzt
         scene.remove(polyhedronMesh);
         informationBox(data);
+        document.getElementById("polyhedron_name").innerHTML = data.name;
         polyhedronMesh = polyhedronDataToMesh(data);
         faces();
         poles();
@@ -381,7 +380,11 @@
     function informationBox(data) {
         dialog = document.createElement('paper-dialog');
         dialog.setAttribute('transition','core-transition-right');
-        dialog.setAttribute('style','position:absoulte; bottom:0px; width:400px; right:50px; padding: 5px');
+        if(window.innerHeight > 600) {
+            dialog.setAttribute('style', 'position:absoulte; bottom:0px; width:400px; right:50px; padding: 5px');
+        } else {
+            dialog.setAttribute('style', 'position:absoulte; bottom:0px; width:50%; right:50px; padding: 5px');
+        }
         dialog.innerHTML = data.description;
         document.body.appendChild(dialog);
     }
