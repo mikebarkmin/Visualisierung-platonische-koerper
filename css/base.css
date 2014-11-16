@@ -1,8 +1,11 @@
 body 
 {
-	font-family: Monospace;
-	font-weight: bold;
-	background-color: #ccccff;
+	font-family: 'RobotoDraft', sans-serif;
+	background-color: #E5E5E5;
 	margin: 0px;
 	overflow: hidden;
+}
+
+.settings-checkbox {
+	padding: 16px;
 }
