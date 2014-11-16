@@ -18,7 +18,7 @@
     <link rel="import" href="bower_components/paper-shadow/paper-shadow.html">
 
 </head>
-<body>
+<body onresize="init()">
 
 <!-- Bibliothek für Threejs einbinden -->
 <script src="js/Three58.js"></script>
@@ -75,12 +75,14 @@
     init();
     animate();
 
-
     function init() {
         // Eine neue Szene erstellen
         scene = new THREE.Scene();
         // Die Kamera positionieren
-        var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
+        var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight-64;
+        if(window.innerWidth > 600) {
+            SCREEN_WIDTH = window.innerWidth-256;
+        }
         var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
         camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
         scene.add(camera);
