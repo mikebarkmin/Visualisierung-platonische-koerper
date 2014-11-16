@@ -378,13 +378,15 @@
     }
 
     function informationBox(data) {
+        if(dialog != null) document.body.removeChild(dialog);
         dialog = document.createElement('paper-dialog');
         dialog.setAttribute('transition','core-transition-right');
-        if(window.innerHeight > 600) {
+        if(window.innerWidth > 600) {
             dialog.setAttribute('style', 'position:absoulte; bottom:0px; width:400px; right:50px; padding: 5px');
         } else {
-            dialog.setAttribute('style', 'position:absoulte; bottom:0px; width:50%; right:50px; padding: 5px');
+            dialog.setAttribute('style', 'position:absoulte; bottom:0px; right:50px; padding: 5px');
         }
+
         dialog.innerHTML = data.description;
         document.body.appendChild(dialog);
     }
